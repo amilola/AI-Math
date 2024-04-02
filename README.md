@@ -1,13 +1,8 @@
-# AI-Solver
+# Word Search
 
-A website that allows for users to query the system for solution to STEM  problems and get back step by step solutions.
+A webapp that uses AI to generate words suitable for different class ranges and then uses an algorithm to generate a word search grid.
 
-It also allows the user to upload the questions as images and have the system provide solutions.
+![word search](./images/image.png)
 
-## Examples
-- First example involves the solution of an integration problem
-![example 1](./images/example_1.png)
-- Second example involves the solution of a differentiation problem
-![example 2](./images/example_2.png)
-- Third example involves the solution of an optimization problem using lagrange multipliers
-![example 3](./images/example_3.png)
+
+
