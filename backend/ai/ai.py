@@ -63,8 +63,8 @@ def create_format_ai() -> RunnableSerializable[dict, str]:
     # prompt = PromptTemplate(input_variables=['question'],
     # template="""Format the following to latex using only '$' AND NEVER USE '$$'\n{question}""")
 
-    prompt = PromptTemplate.from_template("""Give me back this question formatted to latex using only '$' AND NEVER USE '$$' around ONLY math expressions. Use '\;' to give spaces where appropriate.'\n
-    DO NOT ATTEMPT THE QUESTION. ONLY FORMAT TO LATEX AND DON'T ADD ANYTHING THAT WAS NOT IN THE ORIGINAL QUESTION.\n
+    prompt = PromptTemplate.from_template("""Give me back this question formatted to latex using only '$' AND NEVER USE '$$' around ONLY math expressions.\n
+    DO NOT ATTEMPT THE QUESTION. ONLY FORMAT MATH EXPRESSIONS TO LATEX AND DON'T ADD ANYTHING THAT WAS NOT IN THE ORIGINAL QUESTION.\n
     {question}""")
     llm = ChatOpenAI(
         model=os.environ["PRETRAINED_MODEL_NAME"], temperature=0.0, max_tokens=500)
