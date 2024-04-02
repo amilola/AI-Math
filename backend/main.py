@@ -1,110 +1,90 @@
-import logging
-import os, json
-from typing import Optional, List, Dict, Tuple
-
-# from typing import Annotated
-import pandas as pd
-from dotenv import load_dotenv
-import openai
-
-from ai import create_ai, create_ai_with_image, create_format_ai
-from ai.utils import format_response, format_question
-from fastapi import FastAPI, UploadFile, File, status, Response
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File, status, Response, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from utils.encode_image import encode_image
-from utils.models import ImageUpload, UserQuestion, AIAnswer
-from utils.s3_store import upload_image, delete_image
+
+from ai import ai
+from generate_grid import PuzzleGrid
 
 app = FastAPI()
-
 origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=origins,
+    allow_methods=["GET"],
     allow_headers=origins,
 )
 
-load_dotenv()
+
+@app.get('/', status_code=status.HTTP_200_OK)
+def index():
+    return "Word Search Bot API!"
 
 
-# openai.api_key = os.environ["OPENAI_API_KEY"]
+@app.get("/new-game", status_code=status.HTTP_200_OK)
+def new_game(mode: str):
+    # Mode is one of "very-easy", "easy", "hard", "complex"
+    # Very Easy -> Kindergarten and Elementary
+    # Easy -> Middle School
+    # Hard -> High School
+    # Complex -> College
 
-@app.get("/")
-async def get_hello():
-    return "Welcome to our Educational Chatbot"
+    # size = (10, 10)
 
+    difficulty = {
+        "very-easy": "kindergarten and elementary school",
+        "easy": "middle school",
+        "hard": "high school",
+        "complex": "college",
+    }
 
-@app.post("/question", status_code=status.HTTP_200_OK)
-async def post_question(question: UserQuestion):
-    if question.image_links is not None:
-        ai_vision = create_ai_with_image(question.image_links)
-        result = await ai_vision.ainvoke({'input': question.question})
+    grid_size = {
+        "very-easy": 10,
+        "easy": 10,
+        "hard": 12,
+        "complex": 12,
+    }
 
-        formatted_result = format_response(result.content)
-    else:
-        ai = create_ai()
-        result = ai.predict(input=question.question)
+    max_word_length = {
+        "very-easy": 5,
+        "easy": 9,
+        "hard": 10,
+        "complex": 12,
+    }
 
-        formatted_result = format_response(result)
+    prompt = f"""
+        Generate a list of words and and a 5 word hint about the word to enhance the vocabulary of a {difficulty[mode]} student.
+        Any english word sufficiently sophisticated enough AND within the knowledge range for the specified student class is valid.
+        Think carefully,
+        If you think a {difficulty[mode]} student will not know a particular word, DO NOT generate it.
+        """
 
-    if result != '':
-        return JSONResponse(
-            content=AIAnswer(**{"question_content": question.question, "answer_content": formatted_result}).dict()
-        )
-    else:
-        return JSONResponse(
-            content='No result',
-            status_code=status.HTTP_204_NO_CONTENT
-        )
-
-
-@app.put('/image_upload', status_code=status.HTTP_201_CREATED)
-async def image_upload(image_file: UploadFile):
-    file_data = dict()
-    file = await image_file.read()
-    # print(file_name)
-    # file_name, image_data = image_files.image_data
-    #
     try:
-        file_data["name"] = image_file.filename
-        file_data["url"] = upload_image(image=file, key=image_file.filename)
-    except Exception as error:
-        logging.error(error)
+        result = ai(prompt, student_class=difficulty[mode])
+        print(len(result))
+        search_words = [(word[0].capitalize(), word[1]) for word in result]
+
+        size = (grid_size[mode], grid_size[mode])
+        grid = PuzzleGrid(size, search_words, max_word_length[mode])
+        grid.place_words()
         return JSONResponse(
-            content='Error uploading the file',
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE
+            content={
+                "search_words": grid.search_words,
+                "grid": grid.grid,
+                "answers": grid.answers,
+            }
         )
-
-    return JSONResponse(content=file_data)
-
-
-@app.delete('/image_delete', status_code=status.HTTP_200_OK)
-def image_delete(file_name: str):
-    try:
-        delete_image(file_name)
+    except AssertionError:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Generated search words longer than grid. Please retry",
+        )
     except Exception as error:
-        return JSONResponse(
-            content='Error uploading the file',
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE
-        )
-
-    return JSONResponse(content="Deleted")
-
-
-@app.post("/format")
-async def question_format(question: UserQuestion):
-    ai = create_format_ai()
-    formatted_question = ai.invoke({"question": question.question})
-    # formatted_question = create_format_ai(question=question.question)
-    # formatted_question = format_question(question=question.question)
-
-    return formatted_question
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=5000, workers=1)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
