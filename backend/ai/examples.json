@@ -1,0 +1,41 @@
+[
+    {
+        "question":"Find the interval and radius of convergence of the series\n $$sum_{{n=0}}^{{\\infty}}(-1)^{{n}}$$ $$\\frac{{x^{{2 n}}}}{{(2 n) !}}$$",
+        "answer": [
+          "The procedure is as follows\n",
+          "Since $\\left |(-1)^{{n}} \\right| = \\left|(-1)^{{n+1}}\\right| = 1$, we have \n",
+          "$k=\\operatorname{{Lim}}_{{n \\rightarrow \\infty}}\\left|\\frac{{a_{{n+1}}}}{{a_{{n}}}}\\right|<1 which yields\n",
+          "$$\\begin{{aligned}}\n",
+          "k=\\lim_{{n \\rightarrow \\infty}}\\left|\\frac{{x^{{2(n+1)}}}}{{[2(n+1)] !}} \\cdot \\frac{{(2 n) !}}{{x^{{2 n}}}}\\right|<1 \n",
+          "k=\\operatorname{{Lim}}_{{n \\rightarrow \\infty}}\\left|\\frac{{x^{{2 n+2}}}}{{x^{{2 n}}}}-\\frac{{(2 n) !}}{{(2 n+2) !}}\\right|<1 \n",
+          "\\end{{aligned}}$$\n",
+          "$$\\begin{{aligned}}\n",
+          "k=\\operatorname{{Lim}}_{{n \\rightarrow \\infty}}\\left[\\frac{{x^{{n+1}}}}{{x^{{n}}}} \\cdot \\frac{{n !}}{{(n+1) !}}\\right]<1 \\text {{ yields }} ",
+          "\\text {{ from simplifying }} \\frac{{x^{{n+1}}}}{{x^{{n}}}}=x^{{\\not+1=x}}=x \n",
+          "\\text {{ and }} \\frac{{n !}}{{(n+1) !}}=\\frac{{n !}}{{(n+1) n !}}=\\frac{{1}}{{n+1}} \n",
+          "k=\\operatorname{{Lim}}_{{n \\rightarrow \\infty}}\\left|\\frac{{x}}{{n+1}}\\right|<1 \\text {{ as }} n \\text {{ approach }} \\infty \n",
+          "k=\\frac{{1}}{{\\infty+1}} \\cdot x \\Rightarrow k=\\frac{{1}}{{\\infty}} \\cdot x \\Rightarrow k=0 \\cdot x=0 \n",
+          "\\end{{aligned}}$$\n",
+          "Since $k<1$ for all $x$, the series converge absolutely for all $x$.\n",
+          "Thus, the interval of convergence is $(-\\infty,+\\infty)$ and the radius of convergence is $R=+\\infty$"
+        ]
+    },
+    {
+        "question": "Find the solution to the following integral $$\\int_{{0}}^{{1}}x^2$$",
+        "answer": [
+          "The procedure is as follows\n",
+          "The integral of $x^2$ is $\\frac{{x^3}}{{3}}$\n",
+          "Using the upper and lower bound gives $\\frac{{1^3}}{{3}} - \\frac{{0^3}}{{3}}$\n",
+          "The final answer is $\\frac{{1}}{{3}}$"
+        ]
+    },
+    {
+        "question": "Find the solution to the following differential $$\\frac{{d}}{{dx}}(2x^2)$$",
+        "answer": [
+          "The procedure is as follows\n",
+          "2 \\times \\frac{{d}}{{dx}}(x^2)\n",
+          "Using 2 \\dot (2 \\times x^{{2-1}})\n",
+          "The final answer is 4x."
+        ]
+    }
+]
