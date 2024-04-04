@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background: rgb(232,245,251);
+    background: linear-gradient(90deg, rgba(232,245,251,1) 0%, rgba(240,249,229,1) 35%, rgba(247,253,212,1) 76%);
+}
+
+.game {
+    background: rgb(232,245,251);
+background: linear-gradient(90deg, rgba(232,245,251,1) 0%, rgba(240,249,229,1) 35%, rgba(247,253,212,1) 76%);
+}
+
+@layer utilities {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+	}
+}
