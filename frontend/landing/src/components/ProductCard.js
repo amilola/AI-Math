@@ -16,7 +16,7 @@ export default function ProductCard({ imgSrc, name, desc }) {
 			onClick={handleClick}
 		>
 			<div className="border-b-2 border-b-white m-2 px-2 pt-2 pb-5">
-				<Image
+				<img
 					src={imgSrc}
 					alt="product image"
 					className="bg-white"
